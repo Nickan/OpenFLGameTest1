@@ -53,6 +53,8 @@ class DefaultAssetLibrary extends AssetLibrary {
 		type.set ("assets/bootstrap/progress/Left.png", AssetType.IMAGE);
 		className.set ("assets/bootstrap/progress/Right.png", __ASSET__assets_bootstrap_progress_right_png);
 		type.set ("assets/bootstrap/progress/Right.png", AssetType.IMAGE);
+		className.set ("assets/main/aircraft_2c.png", __ASSET__assets_main_aircraft_2c_png);
+		type.set ("assets/main/aircraft_2c.png", AssetType.IMAGE);
 		className.set ("assets/main/Bullet.png", __ASSET__assets_main_bullet_png);
 		type.set ("assets/main/Bullet.png", AssetType.IMAGE);
 		className.set ("assets/main/buttons/Home.png", __ASSET__assets_main_buttons_home_png);
@@ -81,20 +83,18 @@ class DefaultAssetLibrary extends AssetLibrary {
 		type.set ("assets/main/fonts/Light.fnt", AssetType.TEXT);
 		className.set ("assets/main/fonts/Light.png", __ASSET__assets_main_fonts_light_png);
 		type.set ("assets/main/fonts/Light.png", AssetType.IMAGE);
-		className.set ("assets/main/planes/aircraft_1c.png", __ASSET__assets_main_planes_aircraft_1c_png);
-		type.set ("assets/main/planes/aircraft_1c.png", AssetType.IMAGE);
+		className.set ("assets/main/planes/aircraft_1.png", __ASSET__assets_main_planes_aircraft_1_png);
+		type.set ("assets/main/planes/aircraft_1.png", AssetType.IMAGE);
 		className.set ("assets/main/planes/aircraft_1c_hit.png", __ASSET__assets_main_planes_aircraft_1c_hit_png);
 		type.set ("assets/main/planes/aircraft_1c_hit.png", AssetType.IMAGE);
-		className.set ("assets/main/planes/aircraft_1e.png", __ASSET__assets_main_planes_aircraft_1e_png);
-		type.set ("assets/main/planes/aircraft_1e.png", AssetType.IMAGE);
 		className.set ("assets/main/planes/aircraft_1e_hit.png", __ASSET__assets_main_planes_aircraft_1e_hit_png);
 		type.set ("assets/main/planes/aircraft_1e_hit.png", AssetType.IMAGE);
-		className.set ("assets/main/planes/aircraft_2c.png", __ASSET__assets_main_planes_aircraft_2c_png);
-		type.set ("assets/main/planes/aircraft_2c.png", AssetType.IMAGE);
-		className.set ("assets/main/planes/aircraft_2c_hit.png", __ASSET__assets_main_planes_aircraft_2c_hit_png);
-		type.set ("assets/main/planes/aircraft_2c_hit.png", AssetType.IMAGE);
+		className.set ("assets/main/planes/aircraft_2.png", __ASSET__assets_main_planes_aircraft_2_png);
+		type.set ("assets/main/planes/aircraft_2.png", AssetType.IMAGE);
 		className.set ("assets/main/planes/aircraft_3.png", __ASSET__assets_main_planes_aircraft_3_png);
 		type.set ("assets/main/planes/aircraft_3.png", AssetType.IMAGE);
+		className.set ("assets/main/planes/aircraft_3c_hit.png", __ASSET__assets_main_planes_aircraft_3c_hit_png);
+		type.set ("assets/main/planes/aircraft_3c_hit.png", AssetType.IMAGE);
 		className.set ("assets/main/planes/aircraft_3_hit.png", __ASSET__assets_main_planes_aircraft_3_hit_png);
 		type.set ("assets/main/planes/aircraft_3_hit.png", AssetType.IMAGE);
 		className.set ("assets/main/sounds/Coin.mp3", __ASSET__assets_main_sounds_coin_mp3);
@@ -131,6 +131,10 @@ class DefaultAssetLibrary extends AssetLibrary {
 		
 		type.set (id, AssetType.IMAGE);
 		id = "assets/bootstrap/progress/Right.png";
+		path.set (id, id);
+		
+		type.set (id, AssetType.IMAGE);
+		id = "assets/main/aircraft_2c.png";
 		path.set (id, id);
 		
 		type.set (id, AssetType.IMAGE);
@@ -190,7 +194,7 @@ class DefaultAssetLibrary extends AssetLibrary {
 		path.set (id, id);
 		
 		type.set (id, AssetType.IMAGE);
-		id = "assets/main/planes/aircraft_1c.png";
+		id = "assets/main/planes/aircraft_1.png";
 		path.set (id, id);
 		
 		type.set (id, AssetType.IMAGE);
@@ -198,23 +202,19 @@ class DefaultAssetLibrary extends AssetLibrary {
 		path.set (id, id);
 		
 		type.set (id, AssetType.IMAGE);
-		id = "assets/main/planes/aircraft_1e.png";
-		path.set (id, id);
-		
-		type.set (id, AssetType.IMAGE);
 		id = "assets/main/planes/aircraft_1e_hit.png";
 		path.set (id, id);
 		
 		type.set (id, AssetType.IMAGE);
-		id = "assets/main/planes/aircraft_2c.png";
-		path.set (id, id);
-		
-		type.set (id, AssetType.IMAGE);
-		id = "assets/main/planes/aircraft_2c_hit.png";
+		id = "assets/main/planes/aircraft_2.png";
 		path.set (id, id);
 		
 		type.set (id, AssetType.IMAGE);
 		id = "assets/main/planes/aircraft_3.png";
+		path.set (id, id);
+		
+		type.set (id, AssetType.IMAGE);
+		id = "assets/main/planes/aircraft_3c_hit.png";
 		path.set (id, id);
 		
 		type.set (id, AssetType.IMAGE);
@@ -320,6 +320,9 @@ class DefaultAssetLibrary extends AssetLibrary {
 		className.set ("assets/bootstrap/progress/Right.png", __ASSET__assets_bootstrap_progress_right_png);
 		type.set ("assets/bootstrap/progress/Right.png", AssetType.IMAGE);
 		
+		className.set ("assets/main/aircraft_2c.png", __ASSET__assets_main_aircraft_2c_png);
+		type.set ("assets/main/aircraft_2c.png", AssetType.IMAGE);
+		
 		className.set ("assets/main/Bullet.png", __ASSET__assets_main_bullet_png);
 		type.set ("assets/main/Bullet.png", AssetType.IMAGE);
 		
@@ -362,26 +365,23 @@ class DefaultAssetLibrary extends AssetLibrary {
 		className.set ("assets/main/fonts/Light.png", __ASSET__assets_main_fonts_light_png);
 		type.set ("assets/main/fonts/Light.png", AssetType.IMAGE);
 		
-		className.set ("assets/main/planes/aircraft_1c.png", __ASSET__assets_main_planes_aircraft_1c_png);
-		type.set ("assets/main/planes/aircraft_1c.png", AssetType.IMAGE);
+		className.set ("assets/main/planes/aircraft_1.png", __ASSET__assets_main_planes_aircraft_1_png);
+		type.set ("assets/main/planes/aircraft_1.png", AssetType.IMAGE);
 		
 		className.set ("assets/main/planes/aircraft_1c_hit.png", __ASSET__assets_main_planes_aircraft_1c_hit_png);
 		type.set ("assets/main/planes/aircraft_1c_hit.png", AssetType.IMAGE);
 		
-		className.set ("assets/main/planes/aircraft_1e.png", __ASSET__assets_main_planes_aircraft_1e_png);
-		type.set ("assets/main/planes/aircraft_1e.png", AssetType.IMAGE);
-		
 		className.set ("assets/main/planes/aircraft_1e_hit.png", __ASSET__assets_main_planes_aircraft_1e_hit_png);
 		type.set ("assets/main/planes/aircraft_1e_hit.png", AssetType.IMAGE);
 		
-		className.set ("assets/main/planes/aircraft_2c.png", __ASSET__assets_main_planes_aircraft_2c_png);
-		type.set ("assets/main/planes/aircraft_2c.png", AssetType.IMAGE);
-		
-		className.set ("assets/main/planes/aircraft_2c_hit.png", __ASSET__assets_main_planes_aircraft_2c_hit_png);
-		type.set ("assets/main/planes/aircraft_2c_hit.png", AssetType.IMAGE);
+		className.set ("assets/main/planes/aircraft_2.png", __ASSET__assets_main_planes_aircraft_2_png);
+		type.set ("assets/main/planes/aircraft_2.png", AssetType.IMAGE);
 		
 		className.set ("assets/main/planes/aircraft_3.png", __ASSET__assets_main_planes_aircraft_3_png);
 		type.set ("assets/main/planes/aircraft_3.png", AssetType.IMAGE);
+		
+		className.set ("assets/main/planes/aircraft_3c_hit.png", __ASSET__assets_main_planes_aircraft_3c_hit_png);
+		type.set ("assets/main/planes/aircraft_3c_hit.png", AssetType.IMAGE);
 		
 		className.set ("assets/main/planes/aircraft_3_hit.png", __ASSET__assets_main_planes_aircraft_3_hit_png);
 		type.set ("assets/main/planes/aircraft_3_hit.png", AssetType.IMAGE);
@@ -1014,6 +1014,7 @@ class DefaultAssetLibrary extends AssetLibrary {
 @:keep @:bind #if display private #end class __ASSET__assets_bootstrap_progress_fill_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_bootstrap_progress_left_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_bootstrap_progress_right_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
+@:keep @:bind #if display private #end class __ASSET__assets_main_aircraft_2c_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_main_bullet_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_main_buttons_home_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_main_buttons_pause_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
@@ -1028,13 +1029,12 @@ class DefaultAssetLibrary extends AssetLibrary {
 @:keep @:bind #if display private #end class __ASSET__assets_main_fonts_dark_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_main_fonts_light_fnt extends null { }
 @:keep @:bind #if display private #end class __ASSET__assets_main_fonts_light_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
-@:keep @:bind #if display private #end class __ASSET__assets_main_planes_aircraft_1c_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
+@:keep @:bind #if display private #end class __ASSET__assets_main_planes_aircraft_1_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_main_planes_aircraft_1c_hit_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
-@:keep @:bind #if display private #end class __ASSET__assets_main_planes_aircraft_1e_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_main_planes_aircraft_1e_hit_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
-@:keep @:bind #if display private #end class __ASSET__assets_main_planes_aircraft_2c_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
-@:keep @:bind #if display private #end class __ASSET__assets_main_planes_aircraft_2c_hit_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
+@:keep @:bind #if display private #end class __ASSET__assets_main_planes_aircraft_2_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_main_planes_aircraft_3_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
+@:keep @:bind #if display private #end class __ASSET__assets_main_planes_aircraft_3c_hit_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_main_planes_aircraft_3_hit_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_main_sounds_coin_mp3 extends null { }
 @:keep @:bind #if display private #end class __ASSET__assets_main_sounds_coin_ogg extends null { }
@@ -1095,6 +1095,7 @@ class DefaultAssetLibrary extends AssetLibrary {
 @:image("Assets/bootstrap/progress/Fill.png") #if display private #end class __ASSET__assets_bootstrap_progress_fill_png extends lime.graphics.Image {}
 @:image("Assets/bootstrap/progress/Left.png") #if display private #end class __ASSET__assets_bootstrap_progress_left_png extends lime.graphics.Image {}
 @:image("Assets/bootstrap/progress/Right.png") #if display private #end class __ASSET__assets_bootstrap_progress_right_png extends lime.graphics.Image {}
+@:image("Assets/main/aircraft_2c.png") #if display private #end class __ASSET__assets_main_aircraft_2c_png extends lime.graphics.Image {}
 @:image("Assets/main/Bullet.png") #if display private #end class __ASSET__assets_main_bullet_png extends lime.graphics.Image {}
 @:image("Assets/main/buttons/Home.png") #if display private #end class __ASSET__assets_main_buttons_home_png extends lime.graphics.Image {}
 @:image("Assets/main/buttons/Pause.png") #if display private #end class __ASSET__assets_main_buttons_pause_png extends lime.graphics.Image {}
@@ -1109,13 +1110,12 @@ class DefaultAssetLibrary extends AssetLibrary {
 @:image("Assets/main/fonts/Dark.png") #if display private #end class __ASSET__assets_main_fonts_dark_png extends lime.graphics.Image {}
 @:file("Assets/main/fonts/Light.fnt") #if display private #end class __ASSET__assets_main_fonts_light_fnt extends lime.utils.ByteArray {}
 @:image("Assets/main/fonts/Light.png") #if display private #end class __ASSET__assets_main_fonts_light_png extends lime.graphics.Image {}
-@:image("Assets/main/planes/aircraft_1c.png") #if display private #end class __ASSET__assets_main_planes_aircraft_1c_png extends lime.graphics.Image {}
+@:image("Assets/main/planes/aircraft_1.png") #if display private #end class __ASSET__assets_main_planes_aircraft_1_png extends lime.graphics.Image {}
 @:image("Assets/main/planes/aircraft_1c_hit.png") #if display private #end class __ASSET__assets_main_planes_aircraft_1c_hit_png extends lime.graphics.Image {}
-@:image("Assets/main/planes/aircraft_1e.png") #if display private #end class __ASSET__assets_main_planes_aircraft_1e_png extends lime.graphics.Image {}
 @:image("Assets/main/planes/aircraft_1e_hit.png") #if display private #end class __ASSET__assets_main_planes_aircraft_1e_hit_png extends lime.graphics.Image {}
-@:image("Assets/main/planes/aircraft_2c.png") #if display private #end class __ASSET__assets_main_planes_aircraft_2c_png extends lime.graphics.Image {}
-@:image("Assets/main/planes/aircraft_2c_hit.png") #if display private #end class __ASSET__assets_main_planes_aircraft_2c_hit_png extends lime.graphics.Image {}
+@:image("Assets/main/planes/aircraft_2.png") #if display private #end class __ASSET__assets_main_planes_aircraft_2_png extends lime.graphics.Image {}
 @:image("Assets/main/planes/aircraft_3.png") #if display private #end class __ASSET__assets_main_planes_aircraft_3_png extends lime.graphics.Image {}
+@:image("Assets/main/planes/aircraft_3c_hit.png") #if display private #end class __ASSET__assets_main_planes_aircraft_3c_hit_png extends lime.graphics.Image {}
 @:image("Assets/main/planes/aircraft_3_hit.png") #if display private #end class __ASSET__assets_main_planes_aircraft_3_hit_png extends lime.graphics.Image {}
 @:file("Assets/main/sounds/Coin.mp3") #if display private #end class __ASSET__assets_main_sounds_coin_mp3 extends lime.utils.ByteArray {}
 @:file("Assets/main/sounds/Coin.ogg") #if display private #end class __ASSET__assets_main_sounds_coin_ogg extends lime.utils.ByteArray {}

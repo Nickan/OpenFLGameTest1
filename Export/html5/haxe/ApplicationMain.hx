@@ -50,6 +50,10 @@ class ApplicationMain {
 		types.push (lime.Assets.AssetType.IMAGE);
 		
 		
+		urls.push ("assets/main/aircraft_2c.png");
+		types.push (lime.Assets.AssetType.IMAGE);
+		
+		
 		urls.push ("assets/main/Bullet.png");
 		types.push (lime.Assets.AssetType.IMAGE);
 		
@@ -106,7 +110,7 @@ class ApplicationMain {
 		types.push (lime.Assets.AssetType.IMAGE);
 		
 		
-		urls.push ("assets/main/planes/aircraft_1c.png");
+		urls.push ("assets/main/planes/aircraft_1.png");
 		types.push (lime.Assets.AssetType.IMAGE);
 		
 		
@@ -114,23 +118,19 @@ class ApplicationMain {
 		types.push (lime.Assets.AssetType.IMAGE);
 		
 		
-		urls.push ("assets/main/planes/aircraft_1e.png");
-		types.push (lime.Assets.AssetType.IMAGE);
-		
-		
 		urls.push ("assets/main/planes/aircraft_1e_hit.png");
 		types.push (lime.Assets.AssetType.IMAGE);
 		
 		
-		urls.push ("assets/main/planes/aircraft_2c.png");
-		types.push (lime.Assets.AssetType.IMAGE);
-		
-		
-		urls.push ("assets/main/planes/aircraft_2c_hit.png");
+		urls.push ("assets/main/planes/aircraft_2.png");
 		types.push (lime.Assets.AssetType.IMAGE);
 		
 		
 		urls.push ("assets/main/planes/aircraft_3.png");
+		types.push (lime.Assets.AssetType.IMAGE);
+		
+		
+		urls.push ("assets/main/planes/aircraft_3c_hit.png");
 		types.push (lime.Assets.AssetType.IMAGE);
 		
 		
@@ -236,10 +236,10 @@ class ApplicationMain {
 			company: "OpenFL",
 			depthBuffer: false,
 			file: "DisplayingABitmap",
-			fps: Std.int (60),
+			fps: Std.int (30),
 			fullscreen: false,
 			hardware: true,
-			height: Std.int (500),
+			height: Std.int (600),
 			orientation: "",
 			packageName: "org.openfl.samples.displayingabitmap",
 			resizable: true,
@@ -253,7 +253,7 @@ class ApplicationMain {
 		
 		#if (js && html5)
 		#if (munit || utest)
-		openfl.Lib.embed (null, 500, 500, "333333");
+		openfl.Lib.embed (null, 500, 600, "333333");
 		#end
 		#else
 		create ();

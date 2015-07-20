@@ -92,7 +92,7 @@ class WaterBackground extends Sprite
 	// ================================================ HELPER ================================================== //
 	function addTopBackground(tileColumnNumber :Int)
 	{
-		var tileRows :Int = Std.int(stage.stageWidth / _bitmapData.width);
+		var tileRows :Int = Std.int(stage.stageWidth / _bitmapData.width) + 1;
 		for (row in 0...tileRows) {
 			var waterBitmap = new Bitmap(_bitmapData);
 			waterBitmap.x = _bitmapData.width * row;

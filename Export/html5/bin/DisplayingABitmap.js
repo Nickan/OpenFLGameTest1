@@ -34,6 +34,8 @@ ApplicationMain.create = function() {
 	types.push("IMAGE");
 	urls.push("assets/bootstrap/progress/Right.png");
 	types.push("IMAGE");
+	urls.push("assets/main/aircraft_2c.png");
+	types.push("IMAGE");
 	urls.push("assets/main/Bullet.png");
 	types.push("IMAGE");
 	urls.push("assets/main/buttons/Home.png");
@@ -62,19 +64,17 @@ ApplicationMain.create = function() {
 	types.push("TEXT");
 	urls.push("assets/main/fonts/Light.png");
 	types.push("IMAGE");
-	urls.push("assets/main/planes/aircraft_1c.png");
+	urls.push("assets/main/planes/aircraft_1.png");
 	types.push("IMAGE");
 	urls.push("assets/main/planes/aircraft_1c_hit.png");
 	types.push("IMAGE");
-	urls.push("assets/main/planes/aircraft_1e.png");
-	types.push("IMAGE");
 	urls.push("assets/main/planes/aircraft_1e_hit.png");
 	types.push("IMAGE");
-	urls.push("assets/main/planes/aircraft_2c.png");
-	types.push("IMAGE");
-	urls.push("assets/main/planes/aircraft_2c_hit.png");
+	urls.push("assets/main/planes/aircraft_2.png");
 	types.push("IMAGE");
 	urls.push("assets/main/planes/aircraft_3.png");
+	types.push("IMAGE");
+	urls.push("assets/main/planes/aircraft_3c_hit.png");
 	types.push("IMAGE");
 	urls.push("assets/main/planes/aircraft_3_hit.png");
 	types.push("IMAGE");
@@ -116,7 +116,7 @@ ApplicationMain.init = function() {
 	if(loaded == total) ApplicationMain.start();
 };
 ApplicationMain.main = function() {
-	ApplicationMain.config = { antialiasing : 0, background : 3355443, borderless : false, company : "OpenFL", depthBuffer : false, file : "DisplayingABitmap", fps : 60, fullscreen : false, hardware : true, height : 500, orientation : "", packageName : "org.openfl.samples.displayingabitmap", resizable : true, stencilBuffer : true, title : "Displaying a Bitmap", version : "1.0.0", vsync : false, width : 500};
+	ApplicationMain.config = { antialiasing : 0, background : 3355443, borderless : false, company : "OpenFL", depthBuffer : false, file : "DisplayingABitmap", fps : 30, fullscreen : false, hardware : true, height : 600, orientation : "", packageName : "org.openfl.samples.displayingabitmap", resizable : true, stencilBuffer : true, title : "Displaying a Bitmap", version : "1.0.0", vsync : false, width : 500};
 };
 ApplicationMain.start = function() {
 	var hasMain = false;
@@ -1132,31 +1132,21 @@ openfl.display.Sprite.prototype = $extend(openfl.display.DisplayObjectContainer.
 });
 var Main = function() {
 	openfl.display.Sprite.call(this);
-	haxe.Log.trace("Screen dimension: " + this.stage.stageWidth + " " + this.stage.stageHeight,{ fileName : "Main.hx", lineNumber : 19, className : "Main", methodName : "new"});
-	this.addEventListener(openfl.events.Event.ADDED_TO_STAGE,$bind(this,this.onAdded));
-	this.addEventListener(openfl.events.Event.ENTER_FRAME,$bind(this,this.onUpdate));
+	this._gameSprite = new GameSprite();
+	this.addChild(this._gameSprite);
+	this._gameSprite.addEventListener("Restart",$bind(this,this.onRestart));
 };
 $hxClasses["Main"] = Main;
 Main.__name__ = ["Main"];
 Main.__super__ = openfl.display.Sprite;
 Main.prototype = $extend(openfl.display.Sprite.prototype,{
-	onAdded: function(e) {
-		this.removeEventListener(openfl.events.Event.ADDED_TO_STAGE,$bind(this,this.onAdded));
-		this.setupBackgrounds();
-		this.setupPlayerPlane();
-	}
-	,setupBackgrounds: function() {
-		var background = new WaterBackground(openfl.Assets.getBitmapData("assets/main/Water.png"));
-		this.addChild(background);
-	}
-	,setupPlayerPlane: function() {
-		var playerPlane = new Plane(openfl.Assets.getBitmapData("assets/main/planes/aircraft_3.png"));
-		playerPlane.set_x(this.stage.stageWidth * 0.5);
-		playerPlane.set_y(this.stage.stageHeight * 0.5);
-		this.addChild(playerPlane);
-	}
-	,onUpdate: function(e) {
-		TimeManager.getInstance().update();
+	onRestart: function(e) {
+		this._gameSprite.removeEventListener("Restart",$bind(this,this.onRestart));
+		this.removeChild(this._gameSprite);
+		this._gameSprite = null;
+		this._gameSprite = new GameSprite();
+		this.addChild(this._gameSprite);
+		this._gameSprite.addEventListener("Restart",$bind(this,this.onRestart));
 	}
 	,__class__: Main
 });
@@ -1170,6 +1160,54 @@ DocumentClass.__name__ = ["DocumentClass"];
 DocumentClass.__super__ = Main;
 DocumentClass.prototype = $extend(Main.prototype,{
 	__class__: DocumentClass
+});
+var Bullet = function(bitmapData) {
+	this._bulletSpeed = 300;
+	openfl.display.Sprite.call(this);
+	this._bitmap = new openfl.display.Bitmap(bitmapData);
+	this._bitmap.set_x(this._bitmap.get_width() * -0.5);
+	this._bitmap.set_y(this._bitmap.get_height() * -0.5);
+	this.set_visible(false);
+	this.addChild(this._bitmap);
+	this.addEventListener(openfl.events.Event.ADDED_TO_STAGE,$bind(this,this.onAdded));
+};
+$hxClasses["Bullet"] = Bullet;
+Bullet.__name__ = ["Bullet"];
+Bullet.__super__ = openfl.display.Sprite;
+Bullet.prototype = $extend(openfl.display.Sprite.prototype,{
+	onAdded: function(e) {
+		this.removeEventListener(openfl.events.Event.ADDED_TO_STAGE,$bind(this,this.onAdded));
+		this.setupEventListener();
+	}
+	,setupEventListener: function() {
+		this.addEventListener(openfl.events.Event.ENTER_FRAME,$bind(this,this.onUpdate));
+		this.parent.addEventListener("Game over",$bind(this,this.onGameOver));
+	}
+	,onGameOver: function(e) {
+		this.removeEventListener(openfl.events.Event.ENTER_FRAME,$bind(this,this.onUpdate));
+		this.parent.removeEventListener("Game over",$bind(this,this.onGameOver));
+	}
+	,dispose: function() {
+		this.removeEventListener(openfl.events.Event.ENTER_FRAME,$bind(this,this.onUpdate));
+		this.parent.removeEventListener("Game over",$bind(this,this.onGameOver));
+	}
+	,onUpdate: function(e) {
+		if(!this.get_visible()) return;
+		var delta = TimeManager.getInstance().delta;
+		var _g = this;
+		_g.set_y(_g.get_y() - delta * this._bulletSpeed);
+		if(this.get_y() < this._bitmap.get_height() * -0.5) this.set_visible(false);
+	}
+	,fire: function(x,y) {
+		if(y == null) y = 0;
+		if(x == null) x = 0;
+		if(this.get_visible()) return false;
+		this.set_x(x);
+		this.set_y(y);
+		this.set_visible(true);
+		return true;
+	}
+	,__class__: Bullet
 });
 var lime = {};
 lime.AssetLibrary = function() {
@@ -1246,6 +1284,9 @@ var DefaultAssetLibrary = function() {
 	id = "assets/bootstrap/progress/Right.png";
 	this.path.set(id,id);
 	this.type.set(id,"IMAGE");
+	id = "assets/main/aircraft_2c.png";
+	this.path.set(id,id);
+	this.type.set(id,"IMAGE");
 	id = "assets/main/Bullet.png";
 	this.path.set(id,id);
 	this.type.set(id,"IMAGE");
@@ -1288,25 +1329,22 @@ var DefaultAssetLibrary = function() {
 	id = "assets/main/fonts/Light.png";
 	this.path.set(id,id);
 	this.type.set(id,"IMAGE");
-	id = "assets/main/planes/aircraft_1c.png";
+	id = "assets/main/planes/aircraft_1.png";
 	this.path.set(id,id);
 	this.type.set(id,"IMAGE");
 	id = "assets/main/planes/aircraft_1c_hit.png";
 	this.path.set(id,id);
 	this.type.set(id,"IMAGE");
-	id = "assets/main/planes/aircraft_1e.png";
-	this.path.set(id,id);
-	this.type.set(id,"IMAGE");
 	id = "assets/main/planes/aircraft_1e_hit.png";
 	this.path.set(id,id);
 	this.type.set(id,"IMAGE");
-	id = "assets/main/planes/aircraft_2c.png";
-	this.path.set(id,id);
-	this.type.set(id,"IMAGE");
-	id = "assets/main/planes/aircraft_2c_hit.png";
+	id = "assets/main/planes/aircraft_2.png";
 	this.path.set(id,id);
 	this.type.set(id,"IMAGE");
 	id = "assets/main/planes/aircraft_3.png";
+	this.path.set(id,id);
+	this.type.set(id,"IMAGE");
+	id = "assets/main/planes/aircraft_3c_hit.png";
 	this.path.set(id,id);
 	this.type.set(id,"IMAGE");
 	id = "assets/main/planes/aircraft_3_hit.png";
@@ -1462,6 +1500,275 @@ EReg.prototype = {
 	}
 	,__class__: EReg
 };
+var Plane = function(planeBitmapData) {
+	openfl.display.Sprite.call(this);
+	this._planeBitmap = new openfl.display.Bitmap(planeBitmapData);
+	this._planeBitmap.set_x(this._planeBitmap.get_width() * -0.5);
+	this._planeBitmap.set_y(this._planeBitmap.get_height() * -0.5);
+	this.addChild(this._planeBitmap);
+};
+$hxClasses["Plane"] = Plane;
+Plane.__name__ = ["Plane"];
+Plane.__super__ = openfl.display.Sprite;
+Plane.prototype = $extend(openfl.display.Sprite.prototype,{
+	__class__: Plane
+});
+var EnemyPlane = function(bitmapData) {
+	this._speed = 200;
+	Plane.call(this,bitmapData);
+	this.addEventListener(openfl.events.Event.ADDED_TO_STAGE,$bind(this,this.onAdded));
+};
+$hxClasses["EnemyPlane"] = EnemyPlane;
+EnemyPlane.__name__ = ["EnemyPlane"];
+EnemyPlane.__super__ = Plane;
+EnemyPlane.prototype = $extend(Plane.prototype,{
+	onAdded: function(e) {
+		this.removeEventListener(openfl.events.Event.ADDED_TO_STAGE,$bind(this,this.onAdded));
+		this.parent.addEventListener("Game over",$bind(this,this.onGameOver));
+		this.addEventListener(openfl.events.Event.ENTER_FRAME,$bind(this,this.onUpdate));
+		this.setupRandomSpawnPosition();
+	}
+	,onGameOver: function(e) {
+		this.removeEventListener(openfl.events.Event.ENTER_FRAME,$bind(this,this.onUpdate));
+		if(this.parent == null) return;
+		this.parent.removeEventListener("Game over",$bind(this,this.onGameOver));
+	}
+	,setupRandomSpawnPosition: function() {
+		var halfWidth = this._planeBitmap.get_width() * 0.5;
+		this.set_x(Random["float"](-halfWidth,this.stage.stageWidth - halfWidth));
+		this.set_y(this._planeBitmap.get_height() * -0.5);
+	}
+	,onUpdate: function(e) {
+		if(this.stage == null) return;
+		var delta = TimeManager.getInstance().delta;
+		var _g = this;
+		_g.set_y(_g.get_y() + delta * this._speed);
+		if(this.get_y() - this._planeBitmap.get_height() * 0.5 > this.stage.stageHeight) {
+			if(this.functionToCallWhenOutOfScreen != null) {
+				this.removeEventListener(openfl.events.Event.ENTER_FRAME,$bind(this,this.onUpdate));
+				this.functionToCallWhenOutOfScreen(this);
+			}
+		}
+	}
+	,dispose: function() {
+		this.removeEventListener(openfl.events.Event.ENTER_FRAME,$bind(this,this.onUpdate));
+		this.parent.removeEventListener("Game over",$bind(this,this.onGameOver));
+	}
+	,__class__: EnemyPlane
+});
+openfl.events.Event = function(type,bubbles,cancelable) {
+	if(cancelable == null) cancelable = false;
+	if(bubbles == null) bubbles = false;
+	this.type = type;
+	this.bubbles = bubbles;
+	this.cancelable = cancelable;
+	this.eventPhase = openfl.events.EventPhase.AT_TARGET;
+};
+$hxClasses["openfl.events.Event"] = openfl.events.Event;
+openfl.events.Event.__name__ = ["openfl","events","Event"];
+openfl.events.Event.prototype = {
+	clone: function() {
+		var event = new openfl.events.Event(this.type,this.bubbles,this.cancelable);
+		event.eventPhase = this.eventPhase;
+		event.target = this.target;
+		event.currentTarget = this.currentTarget;
+		return event;
+	}
+	,isDefaultPrevented: function() {
+		return this.__preventDefault;
+	}
+	,preventDefault: function() {
+		if(this.cancelable) this.__preventDefault = true;
+	}
+	,stopImmediatePropagation: function() {
+		this.__isCancelled = true;
+		this.__isCancelledNow = true;
+	}
+	,stopPropagation: function() {
+		this.__isCancelled = true;
+	}
+	,toString: function() {
+		return "[Event type=" + this.type + " bubbles=" + Std.string(this.bubbles) + " cancelable=" + Std.string(this.cancelable) + "]";
+	}
+	,__class__: openfl.events.Event
+};
+var GameEvent = function(type,bubbles,cancelable) {
+	if(cancelable == null) cancelable = false;
+	if(bubbles == null) bubbles = false;
+	openfl.events.Event.call(this,type,bubbles,cancelable);
+};
+$hxClasses["GameEvent"] = GameEvent;
+GameEvent.__name__ = ["GameEvent"];
+GameEvent.__super__ = openfl.events.Event;
+GameEvent.prototype = $extend(openfl.events.Event.prototype,{
+	__class__: GameEvent
+});
+var GameSprite = function() {
+	this._score = 0;
+	this._enemySpawnTimer = 0;
+	this._enemySpawnInterval = 0;
+	openfl.display.Sprite.call(this);
+	this._enemies = [];
+	this.addEventListener(openfl.events.Event.ADDED_TO_STAGE,$bind(this,this.onAdded));
+	this.addEventListener(openfl.events.Event.ENTER_FRAME,$bind(this,this.onUpdate));
+};
+$hxClasses["GameSprite"] = GameSprite;
+GameSprite.__name__ = ["GameSprite"];
+GameSprite.__super__ = openfl.display.Sprite;
+GameSprite.prototype = $extend(openfl.display.Sprite.prototype,{
+	onAdded: function(e) {
+		this.removeEventListener(openfl.events.Event.ADDED_TO_STAGE,$bind(this,this.onAdded));
+		this.stage.addEventListener(openfl.events.MouseEvent.MOUSE_DOWN,$bind(this,this.onMouseDown));
+		this.setupBackgrounds();
+		this.setupPlayerPlane();
+		this.setupBullets();
+		this.setupEnemySpawnInterval();
+		this.setupScoreText();
+	}
+	,onGameOver: function(e) {
+		this.stage.addEventListener(openfl.events.KeyboardEvent.KEY_DOWN,$bind(this,this.onKeyDown));
+	}
+	,onMouseDown: function(e) {
+		this.fireBullet();
+	}
+	,onKeyDown: function(e) {
+		if(e.keyCode == 32) {
+			this.stage.removeEventListener(openfl.events.KeyboardEvent.KEY_DOWN,$bind(this,this.onKeyDown));
+			this.dispatchEvent(new GameEvent("Restart"));
+		}
+	}
+	,setupBackgrounds: function() {
+		var background = new WaterBackground(openfl.Assets.getBitmapData("assets/main/Water.png"));
+		this.addChild(background);
+	}
+	,setupPlayerPlane: function() {
+		this._playerPlane = new Plane(openfl.Assets.getBitmapData("assets/main/planes/aircraft_3.png"));
+		this._playerPlane.set_x(this.stage.stageWidth * 0.5);
+		this._playerPlane.set_y(this.stage.stageHeight * 0.5);
+		this._playerPlane.startDrag(true);
+		this.addChild(this._playerPlane);
+	}
+	,setupBullets: function() {
+		var MAX_BULLETS = 50;
+		this._bullets = [];
+		var _g = 0;
+		while(_g < MAX_BULLETS) {
+			var index = _g++;
+			var bullet = new Bullet(openfl.Assets.getBitmapData("assets/main/Bullet.png"));
+			this._bullets.push(bullet);
+			this.addChild(bullet);
+		}
+	}
+	,setupEnemySpawnInterval: function() {
+		this._enemySpawnInterval = Random["float"](1,3);
+	}
+	,setupScoreText: function() {
+		var scoreTextFormat = new openfl.text.TextFormat("Verdana",40,65280,true,true,true);
+		scoreTextFormat.align = openfl.text.TextFormatAlign.CENTER;
+		this._scoreTextField = new openfl.text.TextField();
+		this._scoreTextField.set_width(this.stage.stageWidth);
+		this._scoreTextField.set_text("");
+		this._scoreTextField.set_defaultTextFormat(scoreTextFormat);
+		this.addChild(this._scoreTextField);
+	}
+	,onUpdate: function(e) {
+		if(this._scoreTextField.get_text() == "") this._scoreTextField.set_text("0");
+		TimeManager.getInstance().update();
+		var delta = TimeManager.getInstance().delta;
+		this.updateEnemySpawn(delta);
+		this.updatePlayerCollisionWithEnemyPlanesCheck();
+		this.updateBulletCollisionWithEnemyPlanesCheck();
+	}
+	,updateEnemySpawn: function(delta) {
+		this._enemySpawnTimer += delta;
+		if(this._enemySpawnTimer >= this._enemySpawnInterval) {
+			this._enemySpawnTimer -= this._enemySpawnInterval;
+			this._enemySpawnTimer = Math.abs(this._enemySpawnTimer);
+			this._enemySpawnInterval = Random["float"](1,3);
+			this.spawnRandomEnemy();
+		}
+	}
+	,updatePlayerCollisionWithEnemyPlanesCheck: function() {
+		var _g = 0;
+		var _g1 = this._enemies;
+		while(_g < _g1.length) {
+			var enemy = _g1[_g];
+			++_g;
+			var playerBounds = this._playerPlane.getBounds(this);
+			var enemyBounds = enemy.getBounds(this);
+			if(playerBounds.intersects(enemyBounds)) this.onShowGameOver();
+		}
+	}
+	,updateBulletCollisionWithEnemyPlanesCheck: function() {
+		var _g = 0;
+		var _g1 = this._enemies;
+		while(_g < _g1.length) {
+			var enemy = _g1[_g];
+			++_g;
+			var _g2 = 0;
+			var _g3 = this._bullets;
+			while(_g2 < _g3.length) {
+				var bullet = _g3[_g2];
+				++_g2;
+				var bulletBounds = bullet.getBounds(this);
+				var enemyBounds = enemy.getBounds(this);
+				if(bulletBounds.intersects(enemyBounds)) {
+					this.removeBullet(bullet);
+					this.removeEnemy(enemy);
+					this._scoreTextField.set_text("" + ++this._score);
+					break;
+				}
+				if(bulletBounds.y < -10) this.removeBullet(bullet);
+			}
+		}
+	}
+	,removeBullet: function(bullet) {
+		HxOverrides.remove(this._bullets,bullet);
+		bullet.dispose();
+		this.removeChild(bullet);
+	}
+	,removeEnemy: function(enemy) {
+		HxOverrides.remove(this._enemies,enemy);
+		enemy.dispose();
+		this.removeChild(enemy);
+	}
+	,onShowGameOver: function() {
+		this.removeEventListener(openfl.events.Event.ENTER_FRAME,$bind(this,this.onUpdate));
+		this.stage.removeEventListener(openfl.events.MouseEvent.MOUSE_DOWN,$bind(this,this.onMouseDown));
+		this.stage.addEventListener(openfl.events.KeyboardEvent.KEY_DOWN,$bind(this,this.onKeyDown));
+		this.dispatchEvent(new GameEvent("Game over",true));
+		this._playerPlane.stopDrag();
+		var textFormat = new openfl.text.TextFormat("Verdana",24,8454143,true);
+		textFormat.align = openfl.text.TextFormatAlign.CENTER;
+		var gameText = new openfl.text.TextField();
+		this.addChild(gameText);
+		gameText.set_y(this.stage.stageHeight * 0.5);
+		gameText.set_width(this.stage.stageWidth);
+		gameText.set_defaultTextFormat(textFormat);
+		gameText.set_text("Game Over, press Space to play again");
+	}
+	,fireBullet: function() {
+		var _g = 0;
+		var _g1 = this._bullets;
+		while(_g < _g1.length) {
+			var bullet = _g1[_g];
+			++_g;
+			if(bullet.fire(this._playerPlane.get_x(),this._playerPlane.get_y() - this._playerPlane.get_height() * 0.5)) break;
+		}
+	}
+	,spawnRandomEnemy: function() {
+		var rand = Random["int"](1,2);
+		var enemyPlane = new EnemyPlane(openfl.Assets.getBitmapData("assets/main/planes/aircraft_" + rand + ".png"));
+		enemyPlane.functionToCallWhenOutOfScreen = $bind(this,this.onRemoveEnemyPlane);
+		this._enemies.push(enemyPlane);
+		this.addChild(enemyPlane);
+	}
+	,onRemoveEnemyPlane: function(enemy) {
+		this.removeChild(enemy);
+		HxOverrides.remove(this._enemies,enemy);
+	}
+	,__class__: GameSprite
+});
 var HxOverrides = function() { };
 $hxClasses["HxOverrides"] = HxOverrides;
 HxOverrides.__name__ = ["HxOverrides"];
@@ -1575,7 +1882,7 @@ NMEPreloader.prototype = $extend(openfl.display.Sprite.prototype,{
 		return 3355443;
 	}
 	,getHeight: function() {
-		var height = 500;
+		var height = 600;
 		if(height > 0) return height; else return openfl.Lib.current.stage.stageHeight;
 	}
 	,getWidth: function() {
@@ -1594,16 +1901,23 @@ NMEPreloader.prototype = $extend(openfl.display.Sprite.prototype,{
 	}
 	,__class__: NMEPreloader
 });
-var Plane = function(bitmapData) {
-	openfl.display.Sprite.call(this);
-	this.addChild(new openfl.display.Bitmap(bitmapData));
+var Random = function() {
 };
-$hxClasses["Plane"] = Plane;
-Plane.__name__ = ["Plane"];
-Plane.__super__ = openfl.display.Sprite;
-Plane.prototype = $extend(openfl.display.Sprite.prototype,{
-	__class__: Plane
-});
+$hxClasses["Random"] = Random;
+Random.__name__ = ["Random"];
+Random["int"] = function(min,max) {
+	var rand = Math.random();
+	var diff = max - min;
+	return Std["int"](Random["float"](min,max));
+};
+Random["float"] = function(min,max) {
+	var rand = Math.random();
+	var diff = max - min;
+	return min + rand * diff;
+};
+Random.prototype = {
+	__class__: Random
+};
 var Reflect = function() { };
 $hxClasses["Reflect"] = Reflect;
 Reflect.__name__ = ["Reflect"];
@@ -1820,6 +2134,7 @@ Type.enumEq = function(a,b) {
 	return true;
 };
 var WaterBackground = function(bitmapData) {
+	this._verticalSpeed = 100;
 	openfl.display.Sprite.call(this);
 	this._bitmapData = bitmapData;
 	this.addEventListener(openfl.events.Event.ADDED_TO_STAGE,$bind(this,this.onAdded));
@@ -1831,12 +2146,17 @@ WaterBackground.__super__ = openfl.display.Sprite;
 WaterBackground.prototype = $extend(openfl.display.Sprite.prototype,{
 	onAdded: function(e) {
 		this.removeEventListener(openfl.events.Event.ADDED_TO_STAGE,$bind(this,this.onAdded));
+		this.parent.addEventListener("Game over",$bind(this,this.onGameOver));
 		this.setupBackgrounds();
+	}
+	,onGameOver: function(e) {
+		this.removeEventListener(openfl.events.Event.ENTER_FRAME,$bind(this,this.onUpdate));
+		this.parent.removeEventListener("Game over",$bind(this,this.onGameOver));
 	}
 	,setupBackgrounds: function() {
 		this._backgrounds = [];
 		var tileRows = this.stage.stageWidth / this._bitmapData.width | 0;
-		var tileColumns = this.stage.stageHeight / this._bitmapData.height | 0;
+		var tileColumns = Math.ceil(this.stage.stageHeight / this._bitmapData.height) + 2;
 		var _g = 0;
 		while(_g < tileColumns) {
 			var column = _g++;
@@ -1845,16 +2165,51 @@ WaterBackground.prototype = $extend(openfl.display.Sprite.prototype,{
 		}
 	}
 	,onUpdate: function(e) {
-		haxe.Log.trace("Delta: " + TimeManager.getInstance().delta,{ fileName : "WaterBackground.hx", lineNumber : 44, className : "WaterBackground", methodName : "onUpdate"});
+		var delta = TimeManager.getInstance().delta;
+		this.moveAllBackgrounds(delta);
+		this.checkIfBottomBackgroundIsOutOfScreen();
+	}
+	,moveAllBackgrounds: function(delta) {
+		var speed = this._verticalSpeed * delta;
+		var _g = 0;
+		var _g1 = this._backgrounds;
+		while(_g < _g1.length) {
+			var backgrounds = _g1[_g];
+			++_g;
+			var _g2 = 0;
+			while(_g2 < backgrounds.length) {
+				var backgroundBitmap = backgrounds[_g2];
+				++_g2;
+				var _g3 = backgroundBitmap;
+				_g3.set_y(_g3.get_y() + speed);
+			}
+		}
+	}
+	,checkIfBottomBackgroundIsOutOfScreen: function() {
+		var bottomBackgrounds = this._backgrounds[this._backgrounds.length - 1];
+		var bottomBitmap = bottomBackgrounds[bottomBackgrounds.length - 1];
+		if(bottomBitmap.get_y() > this.stage.stageHeight) {
+			bottomBackgrounds = this._backgrounds.pop();
+			this.setBackgroundOnTop(bottomBackgrounds);
+			this._backgrounds.splice(0,0,bottomBackgrounds);
+		}
+	}
+	,setBackgroundOnTop: function(bottomBackgrounds) {
+		var _g = 0;
+		while(_g < bottomBackgrounds.length) {
+			var bottomBitmap = bottomBackgrounds[_g];
+			++_g;
+			bottomBitmap.set_y(this._backgrounds[0][0].get_y() - (this._bitmapData.height - 1));
+		}
 	}
 	,addTopBackground: function(tileColumnNumber) {
-		var tileRows = this.stage.stageWidth / this._bitmapData.width | 0;
+		var tileRows = (this.stage.stageWidth / this._bitmapData.width | 0) + 1;
 		var _g = 0;
 		while(_g < tileRows) {
 			var row = _g++;
 			var waterBitmap = new openfl.display.Bitmap(this._bitmapData);
 			waterBitmap.set_x(this._bitmapData.width * row);
-			waterBitmap.set_y(this._bitmapData.height * tileColumnNumber);
+			waterBitmap.set_y((this._bitmapData.height - 1) * (tileColumnNumber - 1));
 			this.addChild(waterBitmap);
 			this._backgrounds[tileColumnNumber].push(waterBitmap);
 		}
@@ -21691,42 +22046,6 @@ openfl.errors.TypeError.__super__ = openfl.errors.Error;
 openfl.errors.TypeError.prototype = $extend(openfl.errors.Error.prototype,{
 	__class__: openfl.errors.TypeError
 });
-openfl.events.Event = function(type,bubbles,cancelable) {
-	if(cancelable == null) cancelable = false;
-	if(bubbles == null) bubbles = false;
-	this.type = type;
-	this.bubbles = bubbles;
-	this.cancelable = cancelable;
-	this.eventPhase = openfl.events.EventPhase.AT_TARGET;
-};
-$hxClasses["openfl.events.Event"] = openfl.events.Event;
-openfl.events.Event.__name__ = ["openfl","events","Event"];
-openfl.events.Event.prototype = {
-	clone: function() {
-		var event = new openfl.events.Event(this.type,this.bubbles,this.cancelable);
-		event.eventPhase = this.eventPhase;
-		event.target = this.target;
-		event.currentTarget = this.currentTarget;
-		return event;
-	}
-	,isDefaultPrevented: function() {
-		return this.__preventDefault;
-	}
-	,preventDefault: function() {
-		if(this.cancelable) this.__preventDefault = true;
-	}
-	,stopImmediatePropagation: function() {
-		this.__isCancelled = true;
-		this.__isCancelledNow = true;
-	}
-	,stopPropagation: function() {
-		this.__isCancelled = true;
-	}
-	,toString: function() {
-		return "[Event type=" + this.type + " bubbles=" + Std.string(this.bubbles) + " cancelable=" + Std.string(this.cancelable) + "]";
-	}
-	,__class__: openfl.events.Event
-};
 openfl.events.TextEvent = function(type,bubbles,cancelable,text) {
 	if(text == null) text = "";
 	if(cancelable == null) cancelable = false;
@@ -26821,6 +27140,36 @@ if(window.createjs != null) createjs.Sound.alternateExtensions = ["ogg","mp3","w
 openfl.display.DisplayObject.__instanceCount = 0;
 openfl.display.DisplayObject.__worldRenderDirty = 0;
 openfl.display.DisplayObject.__worldTransformDirty = 0;
+openfl.events.Event.ACTIVATE = "activate";
+openfl.events.Event.ADDED = "added";
+openfl.events.Event.ADDED_TO_STAGE = "addedToStage";
+openfl.events.Event.CANCEL = "cancel";
+openfl.events.Event.CHANGE = "change";
+openfl.events.Event.CLOSE = "close";
+openfl.events.Event.COMPLETE = "complete";
+openfl.events.Event.CONNECT = "connect";
+openfl.events.Event.CONTEXT3D_CREATE = "context3DCreate";
+openfl.events.Event.DEACTIVATE = "deactivate";
+openfl.events.Event.ENTER_FRAME = "enterFrame";
+openfl.events.Event.ID3 = "id3";
+openfl.events.Event.INIT = "init";
+openfl.events.Event.MOUSE_LEAVE = "mouseLeave";
+openfl.events.Event.OPEN = "open";
+openfl.events.Event.REMOVED = "removed";
+openfl.events.Event.REMOVED_FROM_STAGE = "removedFromStage";
+openfl.events.Event.RENDER = "render";
+openfl.events.Event.RESIZE = "resize";
+openfl.events.Event.SCROLL = "scroll";
+openfl.events.Event.SELECT = "select";
+openfl.events.Event.SOUND_COMPLETE = "soundComplete";
+openfl.events.Event.TAB_CHILDREN_CHANGE = "tabChildrenChange";
+openfl.events.Event.TAB_ENABLED_CHANGE = "tabEnabledChange";
+openfl.events.Event.TAB_INDEX_CHANGE = "tabIndexChange";
+openfl.events.Event.UNLOAD = "unload";
+GameEvent.GAME_OVER = "Game over";
+GameEvent.RESTART = "Restart";
+GameSprite.MAX_ENEMY_SPAWN_INTERVAL = 3;
+GameSprite.MIN_ENEMY_SPAWN_INTERVAL = 1;
 haxe.ds.ObjectMap.count = 0;
 js.Boot.__toStr = {}.toString;
 lime.Assets.cache = new lime.AssetCache();
@@ -27922,32 +28271,6 @@ openfl.display3D._Context3DTriangleFace.Context3DTriangleFace_Impl_.FRONT = 1029
 openfl.display3D._Context3DTriangleFace.Context3DTriangleFace_Impl_.FRONT_AND_BACK = 1032;
 openfl.display3D._Context3DTriangleFace.Context3DTriangleFace_Impl_.NONE = 0;
 openfl.errors.Error.DEFAULT_TO_STRING = "Error";
-openfl.events.Event.ACTIVATE = "activate";
-openfl.events.Event.ADDED = "added";
-openfl.events.Event.ADDED_TO_STAGE = "addedToStage";
-openfl.events.Event.CANCEL = "cancel";
-openfl.events.Event.CHANGE = "change";
-openfl.events.Event.CLOSE = "close";
-openfl.events.Event.COMPLETE = "complete";
-openfl.events.Event.CONNECT = "connect";
-openfl.events.Event.CONTEXT3D_CREATE = "context3DCreate";
-openfl.events.Event.DEACTIVATE = "deactivate";
-openfl.events.Event.ENTER_FRAME = "enterFrame";
-openfl.events.Event.ID3 = "id3";
-openfl.events.Event.INIT = "init";
-openfl.events.Event.MOUSE_LEAVE = "mouseLeave";
-openfl.events.Event.OPEN = "open";
-openfl.events.Event.REMOVED = "removed";
-openfl.events.Event.REMOVED_FROM_STAGE = "removedFromStage";
-openfl.events.Event.RENDER = "render";
-openfl.events.Event.RESIZE = "resize";
-openfl.events.Event.SCROLL = "scroll";
-openfl.events.Event.SELECT = "select";
-openfl.events.Event.SOUND_COMPLETE = "soundComplete";
-openfl.events.Event.TAB_CHILDREN_CHANGE = "tabChildrenChange";
-openfl.events.Event.TAB_ENABLED_CHANGE = "tabEnabledChange";
-openfl.events.Event.TAB_INDEX_CHANGE = "tabIndexChange";
-openfl.events.Event.UNLOAD = "unload";
 openfl.events.TextEvent.LINK = "link";
 openfl.events.TextEvent.TEXT_INPUT = "textInput";
 openfl.events.ErrorEvent.ERROR = "error";

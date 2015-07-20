@@ -161,6 +161,10 @@ class GameSprite extends Sprite
 					_scoreTextField.text = "" + ++_score;
 					break;
 				}
+				
+				if (bulletBounds.y < -10) {
+					removeBullet(bullet);
+				}
 					
 			}
 			
