@@ -11,7 +11,9 @@ class TimeManager
 	public var delta(default, null) :Float = 0;
 	var _lastTime :Float = 0;
 	
-	function new() { }
+	function new() { 
+		_lastTime = Lib.getTimer();
+	}
 	
 	/**
 	 * Should be called every frame

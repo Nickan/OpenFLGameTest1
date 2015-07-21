@@ -1167,7 +1167,6 @@ var Bullet = function(bitmapData) {
 	this._bitmap = new openfl.display.Bitmap(bitmapData);
 	this._bitmap.set_x(this._bitmap.get_width() * -0.5);
 	this._bitmap.set_y(this._bitmap.get_height() * -0.5);
-	this.set_visible(false);
 	this.addChild(this._bitmap);
 	this.addEventListener(openfl.events.Event.ADDED_TO_STAGE,$bind(this,this.onAdded));
 };
@@ -1192,20 +1191,15 @@ Bullet.prototype = $extend(openfl.display.Sprite.prototype,{
 		this.parent.removeEventListener("Game over",$bind(this,this.onGameOver));
 	}
 	,onUpdate: function(e) {
-		if(!this.get_visible()) return;
 		var delta = TimeManager.getInstance().delta;
 		var _g = this;
 		_g.set_y(_g.get_y() - delta * this._bulletSpeed);
-		if(this.get_y() < this._bitmap.get_height() * -0.5) this.set_visible(false);
 	}
 	,fire: function(x,y) {
 		if(y == null) y = 0;
 		if(x == null) x = 0;
-		if(this.get_visible()) return false;
 		this.set_x(x);
 		this.set_y(y);
-		this.set_visible(true);
-		return true;
 	}
 	,__class__: Bullet
 });
@@ -1643,21 +1637,21 @@ GameSprite.prototype = $extend(openfl.display.Sprite.prototype,{
 	}
 	,setupPlayerPlane: function() {
 		this._playerPlane = new Plane(openfl.Assets.getBitmapData("assets/main/planes/aircraft_3.png"));
-		this._playerPlane.set_x(this.stage.stageWidth * 0.5);
-		this._playerPlane.set_y(this.stage.stageHeight * 0.5);
+		this._playerPlane.set_x(this.stage.get_mouseX());
+		this._playerPlane.set_y(this.stage.get_mouseY());
 		this._playerPlane.startDrag(true);
 		this.addChild(this._playerPlane);
+		this.addEventListener(openfl.events.MouseEvent.MOUSE_MOVE,$bind(this,this.onMouseMoved));
+	}
+	,onMouseMoved: function(e) {
+		this._playerPlane.set_x(e.stageX);
+		this._playerPlane.set_y(e.stageY);
 	}
 	,setupBullets: function() {
-		var MAX_BULLETS = 50;
 		this._bullets = [];
-		var _g = 0;
-		while(_g < MAX_BULLETS) {
-			var index = _g++;
-			var bullet = new Bullet(openfl.Assets.getBitmapData("assets/main/Bullet.png"));
-			this._bullets.push(bullet);
-			this.addChild(bullet);
-		}
+	}
+	,createBullet: function() {
+		return new Bullet(openfl.Assets.getBitmapData("assets/main/Bullet.png"));
 	}
 	,setupEnemySpawnInterval: function() {
 		this._enemySpawnInterval = Random["float"](1,3);
@@ -1718,7 +1712,10 @@ GameSprite.prototype = $extend(openfl.display.Sprite.prototype,{
 					this._scoreTextField.set_text("" + ++this._score);
 					break;
 				}
-				if(bulletBounds.y < -10) this.removeBullet(bullet);
+				if(bulletBounds.y < -10) {
+					this.removeBullet(bullet);
+					break;
+				}
 			}
 		}
 	}
@@ -1736,6 +1733,7 @@ GameSprite.prototype = $extend(openfl.display.Sprite.prototype,{
 		this.removeEventListener(openfl.events.Event.ENTER_FRAME,$bind(this,this.onUpdate));
 		this.stage.removeEventListener(openfl.events.MouseEvent.MOUSE_DOWN,$bind(this,this.onMouseDown));
 		this.stage.addEventListener(openfl.events.KeyboardEvent.KEY_DOWN,$bind(this,this.onKeyDown));
+		this.removeEventListener(openfl.events.MouseEvent.MOUSE_MOVE,$bind(this,this.onMouseMoved));
 		this.dispatchEvent(new GameEvent("Game over",true));
 		this._playerPlane.stopDrag();
 		var textFormat = new openfl.text.TextFormat("Verdana",24,8454143,true);
@@ -1748,13 +1746,10 @@ GameSprite.prototype = $extend(openfl.display.Sprite.prototype,{
 		gameText.set_text("Game Over, press Space to play again");
 	}
 	,fireBullet: function() {
-		var _g = 0;
-		var _g1 = this._bullets;
-		while(_g < _g1.length) {
-			var bullet = _g1[_g];
-			++_g;
-			if(bullet.fire(this._playerPlane.get_x(),this._playerPlane.get_y() - this._playerPlane.get_height() * 0.5)) break;
-		}
+		var bullet = this.createBullet();
+		bullet.fire(this._playerPlane.get_x(),this._playerPlane.get_y() - this._playerPlane.get_height() * 0.5);
+		this._bullets.push(bullet);
+		this.addChild(bullet);
 	}
 	,spawnRandomEnemy: function() {
 		var rand = Random["int"](1,2);
@@ -2045,6 +2040,7 @@ StringTools.fastCodeAt = function(s,index) {
 var TimeManager = function() {
 	this._lastTime = 0;
 	this.delta = 0;
+	this._lastTime = openfl.Lib.getTimer();
 };
 $hxClasses["TimeManager"] = TimeManager;
 TimeManager.__name__ = ["TimeManager"];

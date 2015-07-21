@@ -34,8 +34,9 @@ class GameSprite extends Sprite
 		_enemies = [];
 		addEventListener(Event.ADDED_TO_STAGE, onAdded);
 		addEventListener(Event.ENTER_FRAME, onUpdate);
+		
+		
 	}
-	
 
 	private function onAdded(e:Event):Void 
 	{
@@ -78,21 +79,32 @@ class GameSprite extends Sprite
 	function setupPlayerPlane() 
 	{
 		_playerPlane = new Plane(Assets.getBitmapData("assets/main/planes/aircraft_3.png"));
-		_playerPlane.x = stage.stageWidth * 0.5;
-		_playerPlane.y = stage.stageHeight * 0.5;
+		//_playerPlane.x = stage.stageWidth * 0.5;
+		//_playerPlane.y = stage.stageHeight * 0.5;
+		_playerPlane.x = stage.mouseX;
+		_playerPlane.y = stage.mouseY;
 		_playerPlane.startDrag(true);
 		addChild(_playerPlane);
+		
+		#if html5
+			addEventListener(MouseEvent.MOUSE_MOVE, onMouseMoved);
+		#end
+	}
+	
+	private function onMouseMoved(e :MouseEvent):Void 
+	{
+		_playerPlane.x = e.stageX;
+		_playerPlane.y = e.stageY;
 	}
 	
 	function setupBullets() 
 	{
-		var MAX_BULLETS = 50;
 		_bullets = [];
-		for (index in 0...MAX_BULLETS) {
-			var bullet = new Bullet(Assets.getBitmapData("assets/main/Bullet.png"));
-			_bullets.push(bullet);
-			addChild(bullet);
-		}
+	}
+	
+	function createBullet()
+	{
+		return new Bullet(Assets.getBitmapData("assets/main/Bullet.png"));
 	}
 	
 	function setupEnemySpawnInterval() 
@@ -164,6 +176,7 @@ class GameSprite extends Sprite
 				
 				if (bulletBounds.y < -10) {
 					removeBullet(bullet);
+					break;
 				}
 					
 			}
@@ -192,6 +205,10 @@ class GameSprite extends Sprite
 		stage.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		
+		#if html5
+			removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMoved);
+		#end
+		
 		dispatchEvent(new GameEvent(GameEvent.GAME_OVER, true));
 
 		_playerPlane.stopDrag();
@@ -210,10 +227,10 @@ class GameSprite extends Sprite
 	// ================================================ HELPER ================================================== //
 	function fireBullet() 
 	{
-		for (bullet in _bullets) {
-			if (bullet.fire(_playerPlane.x, _playerPlane.y - _playerPlane.height * 0.5))
-				break;
-		}
+		var bullet = createBullet();
+		bullet.fire(_playerPlane.x, _playerPlane.y - _playerPlane.height * 0.5);
+		_bullets.push(bullet);
+		addChild(bullet);
 	}
 	
 	function spawnRandomEnemy() 
