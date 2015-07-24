@@ -1529,7 +1529,7 @@ EnemyPlane.prototype = $extend(Plane.prototype,{
 	}
 	,setupRandomSpawnPosition: function() {
 		var halfWidth = this._planeBitmap.get_width() * 0.5;
-		this.set_x(Random["float"](-halfWidth,this.stage.stageWidth - halfWidth));
+		this.set_x(Random["float"](halfWidth,this.stage.stageWidth - halfWidth));
 		this.set_y(this._planeBitmap.get_height() * -0.5);
 	}
 	,onUpdate: function(e) {

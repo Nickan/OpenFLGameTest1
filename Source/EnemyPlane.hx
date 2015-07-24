@@ -42,12 +42,8 @@ class EnemyPlane extends Plane
 	function setupRandomSpawnPosition() 
 	{
 		var halfWidth = _planeBitmap.width * 0.5;
-		this.x = Random.float( -halfWidth, stage.stageWidth - halfWidth);
+		this.x = Random.float(halfWidth, stage.stageWidth - halfWidth);
 		this.y = _planeBitmap.height * -0.5;
-		//this.y = stage.stageHeight * 0.5;
-		
-		//...
-		//trace("Position assigned: " + this.x + " " + this.y);
 	}
 	
 	
